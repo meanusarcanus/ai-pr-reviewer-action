@@ -67,7 +67,34 @@ TOOLS_DEFINITION = [
     }
 ]
 
+USAGE_FILE = Path.home() / ".mcp_pr_reviewer_usage.json"
+
+def check_mcp_access():
+    key = os.environ.get("RAPIDAPI_KEY") or os.environ.get("PR_AGENT_API_KEY")
+    if key:
+        return True, ""
+    count = 0
+    if USAGE_FILE.exists():
+        try:
+            with open(USAGE_FILE) as f:
+                count = json.load(f).get("count", 0)
+        except Exception:
+            pass
+    if count >= 10:
+        return False, "⚠️ Free trial quota (10 requests) reached for this MCP server.\nTo unlock unlimited PR reviews in Claude Desktop & Cursor IDE, please subscribe at: https://rapidapi.com/meanusarcanus/api/ai-pr-reviewer and add 'RAPIDAPI_KEY': 'your_key' to your MCP environment configuration."
+    count += 1
+    try:
+        with open(USAGE_FILE, "w") as f:
+            json.dump({"count": count}, f)
+    except Exception:
+        pass
+    return True, ""
+
 def handle_call_tool(tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+    allowed, err_msg = check_mcp_access()
+    if not allowed:
+        return {"content": [{"type": "text", "text": err_msg}]}
+
     diff = arguments.get("diff_text", "")
 
     if tool_name == "review_pr_diff":
