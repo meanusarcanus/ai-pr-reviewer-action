@@ -1,0 +1,54 @@
+Metadata-Version: 2.4
+Name: ai-pr-reviewer
+Version: 1.0.0
+Summary: Automated AI Pull Request Reviewer & Security Code Auditor.
+Home-page: https://github.com/meanusarcanus/ai-pr-reviewer-action
+Author: Meanus Arcanus
+Author-email: meanusarcanus@gmail.com
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: requires-python
+
+# 🤖 PR-Agent Pro Python SDK & CLI
+
+Automated AI Pull Request Code Reviewer & Security Auditor.
+
+---
+
+## ⚡ Quickstart
+
+```bash
+pip install ai-pr-reviewer
+```
+
+```python
+from ai_pr_reviewer import review_diff, audit_security, generate_changelog
+
+diff = """
+--- a/db.py
++++ b/db.py
+@@ -10,3 +10,4 @@
++    query = f"SELECT * FROM users WHERE email = '{user_email}'"
++    cursor.execute(query)
+"""
+
+# 1. Security & Secret Leak Audit
+security = audit_security(diff)
+print(f"Security Grade: {security['security_grade']} (Score: {security['security_score']}/100)")
+for f in security['findings']:
+    print(f"⚠️ {f['type']}: {f['description']}")
+
+# 2. Automated Code Review with 1-Click Suggestions
+review = review_code_diff(diff)
+print(f"Verdict: {review['verdict']}")
+for c in review['comments']:
+    print(f"📝 {c['file']}: {c['comment']}")
+
+# 3. Semantic Changelog
+changelog = generate_pr_summary_and_changelog(diff, pr_title="Add user query")
+print(changelog['summary_markdown'])
+```

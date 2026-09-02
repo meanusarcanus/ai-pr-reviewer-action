@@ -1,0 +1,245 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PR-Agent Pro \u2014 Automated AI PR Reviewer & Security Auditor API",
+    "description": "Automated pull request code review, secret leak prevention, 1-click diff suggestions, and semantic changelogs.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "health_check_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/review-diff": {
+      "post": {
+        "summary": "Review Diff Endpoint",
+        "operationId": "review_diff_endpoint_api_v1_review_diff_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiffReviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/audit-security": {
+      "post": {
+        "summary": "Audit Security Endpoint",
+        "operationId": "audit_security_endpoint_api_v1_audit_security_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SecurityAuditRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/generate-changelog": {
+      "post": {
+        "summary": "Generate Changelog Endpoint",
+        "operationId": "generate_changelog_endpoint_api_v1_generate_changelog_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangelogRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChangelogRequest": {
+        "properties": {
+          "diff_text": {
+            "type": "string",
+            "title": "Diff Text",
+            "example": "--- a/api.py\n+++ b/api.py\n@@ -5,3 +5,6 @@\n+def new_endpoint(): pass\n"
+          },
+          "pr_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pr Title",
+            "default": "Feature update"
+          }
+        },
+        "type": "object",
+        "required": [
+          "diff_text"
+        ],
+        "title": "ChangelogRequest"
+      },
+      "DiffReviewRequest": {
+        "properties": {
+          "diff_text": {
+            "type": "string",
+            "title": "Diff Text",
+            "example": "--- a/auth.py\n+++ b/auth.py\n@@ -10,3 +10,4 @@\n+    res = requests.get(url)\n"
+          }
+        },
+        "type": "object",
+        "required": [
+          "diff_text"
+        ],
+        "title": "DiffReviewRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "SecurityAuditRequest": {
+        "properties": {
+          "diff_text": {
+            "type": "string",
+            "title": "Diff Text",
+            "example": "--- a/config.py\n+++ b/config.py\n@@ -1,2 +1,3 @@\n+SECRET_KEY = 'secret_key_1234567890abcdef1234'\n"
+          }
+        },
+        "type": "object",
+        "required": [
+          "diff_text"
+        ],
+        "title": "SecurityAuditRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

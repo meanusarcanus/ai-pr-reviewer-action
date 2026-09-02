@@ -1,0 +1,47 @@
+name: "PR-Agent Pro — Automated AI PR Reviewer & Security Auditor"
+description: "Automatically review pull requests, catch security leaks, suggest 1-click diff fixes, and generate semantic changelogs."
+author: "Meanus Arcanus"
+branding:
+  icon: "check-circle"
+  color: "blue"
+
+inputs:
+  github_token:
+    description: "GitHub Token for posting review comments (use secrets.GITHUB_TOKEN)"
+    required: true
+    default: "${{ github.token }}"
+  openai_api_key:
+    description: "API Key for AI reasoning (Optional, uses built-in heuristic models if omitted)"
+    required: false
+  severity_threshold:
+    description: "Minimum severity to post review comments (Low, Medium, High, Critical)"
+    required: false
+    default: "Medium"
+
+outputs:
+  review_verdict:
+    description: "Final PR review verdict (APPROVE, REQUEST_CHANGES, COMMENT)"
+  security_score:
+    description: "Calculated security score (0 to 100)"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests pyyaml
+
+    - name: Run PR-Agent Review
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        SEVERITY_THRESHOLD: ${{ inputs.severity_threshold }}
+      run: |
+        python ${{ github.action_path }}/main.py
