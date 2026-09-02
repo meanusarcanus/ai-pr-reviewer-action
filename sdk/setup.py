@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="ai-pr-reviewer",
+    name="pr-agent-pro",
     version="1.0.0",
     description="Automated AI Pull Request Reviewer & Security Code Audit Engine.",
     long_description=open("README.md").read() if open("README.md") else "",

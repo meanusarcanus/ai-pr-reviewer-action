@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ai-pr-reviewer"
+name = "pr-agent-pro"
 version = "1.0.0"
 description = "Automated AI Pull Request Reviewer & Security Code Auditor."
 readme = "README.md"
